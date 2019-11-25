@@ -115,7 +115,7 @@ li.logo {
 }
 .entry {
   display: grid;
-  grid-template-columns: 3fr 10fr;
+  grid-template-columns: 1fr 10fr 1fr;
   grid-template-rows: 1fr;
   grid-column-gap: 0.1rem;
   margin-bottom: 0.1rem;
@@ -126,6 +126,16 @@ li.logo {
   border-bottom: 1px solid #007eb6;
 }
 
+.entryImg img {
+  width: 150px;
+  height: 150px;
+  /* max-height: 150px;
+  max-width:150px; */
+  /* max-height: 10em;
+  max-width: 10em;
+  min-height: 7em;
+  min-width: 7em; */
+}
 .entry a {
   color: #007eb6;
   text-decoration: none;

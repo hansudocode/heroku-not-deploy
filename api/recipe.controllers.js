@@ -80,17 +80,19 @@ exports.upload = function(req, res) {
 };
 
 const updateRecipe = (recipe) => {
-  console.log('recipe:', recipe)
+  // console.log('recipe:', recipe) 
   const {id, campbellsId} = recipe;
-  Recipe.update ({campbellsId: campbellsId}, recipe, { upsert: true, new: true }, 
+  const update = Recipe.update ({campbellsId: campbellsId}, recipe, { upsert: true, new: true }, 
     (err, obj) => {
       if( err ) { console.log(err); }
       return obj;
     }
   )
+  return update ? true : false;
+  // .catch(() => false);
 }
 const fetchRecipes = (req, res) => {
-  console.log(req)
+  // console.log(req)
   // curl -X GET --header "Accept: application/json" --header "api-key: 123" "https://services.campbells.com/api/Recipes//recipe?pageIndex=0&limit=100"
   const { fetchLimit } = req.params
   fetch(
@@ -103,17 +105,18 @@ const fetchRecipes = (req, res) => {
         return;
       } 
       response.json().then(data => {
-        console.log('data', data)
+        // console.log('data', data)
         const result = data.Result.map((recipe => {
           const parsedRecipe = parseRecipe(recipe);
-          console.log('parsedRecipe:', parsedRecipe);
-          updateRecipe(parsedRecipe);
+          // console.log('parsedRecipe:', parsedRecipe);
+          const res = updateRecipe(parsedRecipe)
         }));
-        return res.send(result)
+        return result
       })
       .catch(err => console.log(err))
       // response.json().then(data => this.setState({ stories: data.results, isLoading: false }))
     })
+    .then((err, obj) => obj)
     .catch(error => console.log(error))
 }
 

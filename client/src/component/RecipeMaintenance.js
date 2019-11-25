@@ -1,98 +1,132 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import "../css/addRecipe.css";
 
+function RecipeMaintenance(props) {
+  const nameRef = React.createRef();
+  const imageRef = React.createRef();
+  const descriptionRef = React.createRef();
+  const ingredientsRef = React.createRef();
+  const preparationRef = React.createRef();
+  const importRef = React.createRef();
+  const [busy, setBusy] = useState(false);
+  const [recipes, setRecipes] = useState([]);
 
-class RecipeMaintenance extends Component {
-  nameRef = React.createRef();
-  imageRef = React.createRef();
-  descriptionRef = React.createRef();
-  ingredientsRef = React.createRef();
-  preparationRef = React.createRef();
-  importRef = React.createRef();
-
-  createRecipe(e) {
+  const createRecipe = (e) => {
     e.preventDefault();
+    setBusy(true);
     const recipe = {
-      title: this.nameRef.current.value,
-      image: this.imageRef.current.value,
-      description: this.descriptionRef.current.value,
-      ingredients: this.ingredientsRef.current.value.split(/\n/),
-      preparation: this.preparationRef.current.value.split(/\n/).map((step) => {return {step: step}})
+      title: nameRef.current.value,
+      image: imageRef.current.value,
+      description: descriptionRef.current.value,
+      ingredients: ingredientsRef.current.value.split(/\n/),
+      preparation: preparationRef.current.value.split(/\n/).map((step) => {return {step: step}})
     };
     const {title, description, ingredients, preparation} = recipe
     if (title && description && ingredients && preparation) {
-      this.props.addRecipe(recipe);
+      props.addRecipe(recipe)
+      .then(() => {
+        props.getRecipes()
+        setBusy(false)
+      })
+      .catch(() => setBusy(false))
     }
     console.log(recipe);
   }
 
-  importRecipe(e) {
-    e.preventDefault();
-    const limit = parseInt(this.importRef.current.value > 0 ? this.importRef.current.value : 1);
+  // const buildRecipe = () => {
+  //   const recipe = {
+  //     title: nameRef.current.value,
+  //     image: imageRef.current.value,
+  //     description: descriptionRef.current.value,
+  //     ingredients: ingredientsRef.current.value.split(/\n/),
+  //     preparation: preparationRef.current.value.split(/\n/).map((step) => {return {step: step}})
+  //   };
+  //   const {title, description, ingredients, preparation} = recipe
+  //   if (title && description && ingredients && preparation) {
+  //     this.props.addRecipe(recipe);
+  //   }
+  // }
+
+  const importRecipes = (e) => {
+    
+    const limit = parseInt(importRef.current.value > 0 ? importRef.current.value : 1);
     if (limit > 1) {
-      this.props.importRecipes(limit);
+      props.importRecipes(limit);
     }
     // console.log(recipe);
   }
   
-  render() {
+  const doAction = (action) => {
+    setBusy(true);
+    action.then(
+      setBusy(false)
+    ).then(props.getRecipes())
+    .catch(setBusy(false))
+
+  }
+  
+  // const enableBtn = () => busy ? 'disabled' : 'enabled';
     return (
       <div className='site-wrap'>
         <div>
           <h3>Remove All Data</h3>
-          <form onSubmit={() => this.props.removeAll()}>
-            <button type='submit'>remove</button>
+          <form onSubmit={() => doAction(props.removeAll())}>
+            <button type='submit' disabled={busy}>remove</button>
           </form>
         </div>
         <div>
           <h3>Import Data</h3>
-          <form onSubmit={() => this.props.importRecipes()}>
+          <form onSubmit={() => doAction(props.importRecipes())}>
             {/* <input
               type='text'
               name='importText'
               placeholder='Number of recipes to import'
-              ref={this.importRef}
+              ref={importRef}
             /> */}
-            <button type='submit'>import</button>
+            <button type='submit' disabled={busy}>import</button>
           </form>
         </div>
         <h3>Add Recipe Form</h3>
-        <form onSubmit={e => this.createRecipe(e)}>
+        <form onSubmit={e => createRecipe(e)}>
           <input
             type='text'
             name='name'
             placeholder='Recipe name'
-            ref={this.nameRef}
+            ref={nameRef}
+            disabled={busy}
           />
           <input
             type='text'
             name='image'
             placeholder='Recipe image'
-            ref={this.imageRef} 
+            ref={imageRef} 
+            disabled={busy}
           />
           <textarea
             type='text'
             name='description'
             placeholder='Description'
-            ref={this.descriptionRef}
+            ref={descriptionRef}
+            disabled={busy}
           />
           <textarea
             type='text'
             name='ingredients'
             placeholder='Recipe Ingredients'
-            ref={this.ingredientsRef}
+            ref={ingredientsRef}
+            disabled={busy}
           />
           <textarea
             type='text'
             name='preparation'
             placeholder='Recipe preparation steps'
-            ref={this.preparationRef}
+            ref={preparationRef}
+            disabled={busy}
           />
-          <button type='submit'>Add Recipe</button>
+          <button type='submit' disabled={busy}>Add Recipe</button>
         </form>
       </div>
     );
-  }
 }
 
 export default RecipeMaintenance;

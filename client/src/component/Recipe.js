@@ -64,16 +64,19 @@ class Recipe extends React.Component {
     return (
       
       <div className="entry">
-        <Link to={`/recipe/${_id}`}><img
+      <div className="entryImg">
+        <Link to={`/recipe/${_id}`}><img class='mainImg'
           src={getImage(campbellsId)}
           alt={decode(this.props.recipe.name)}
         /></Link>
-        
+        </div>
         <div className="entryDesc">
         <h2>
           <Link to={`/recipe/${_id}`}>{decode(title)}</Link>
         </h2>
         <p dangerouslySetInnerHTML={{__html: decode(description)}}></p>
+        </div>
+        <div>
         <Link to='/' onClick={() => this.props.removeRecipe({id: _id, index: this.props.index})} style={{float: 'right'}}><img
           src={deleteSvg}
           height='20'

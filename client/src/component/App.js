@@ -24,13 +24,16 @@ function App() {
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
+    getRecipes();
+  }, []);
+
+  const getRecipes = () => {
     fetch(`/api/recipes`)
       .then(response => response.json())
       .then(json => {
         setRecipes(json);
       });
-  }, []);
-
+  }
   // const removeRecipe = index => {
   //   console.log(index);
   //   const recipes = [...recipes];
@@ -72,18 +75,23 @@ function App() {
       body: JSON.stringify(recipe)
     })
       .then(response => response.json())
-      .then(recipe => console.log(recipe));
+      .then(recipe => console.log(recipe))
+      .then(()=> getRecipes())
   };
 
-  const importRecipes = limit => {
-    fetch(`/api/import/${limit}`, {
+  const importRecipes = () => {
+    fetch(`/api/import`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"
       }
     })
-      .then(response => response.json())
-      .then(res => console.log(res));
+      .then(response => 
+        console.log(response.json())
+        
+      )
+      .then(res => console.log(res))
+      .then(getRecipes())
   };
 
   const removeAll = () => {
@@ -105,7 +113,7 @@ function App() {
         <Recipes path="/" recipes={recipes} removeRecipe={removeRecipe}/>
         <Recipes path="/type/:type" recipes={recipes} />
         <RecipeDetail path="/recipe/:recipeId" recipes={recipes} />
-        <RecipeMaintenance path='/maintenance' addRecipe={addRecipe} importRecipes={importRecipes} removeAll={removeAll}/>
+        <RecipeMaintenance path='/maintenance' addRecipe={addRecipe} importRecipes={importRecipes} removeAll={removeAll} getRecipes={getRecipes}/>
       </Router>
     </div>
   );
