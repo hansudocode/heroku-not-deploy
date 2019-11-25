@@ -7,6 +7,7 @@ const RecipeSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  campbellsId: Number,
   description: String,
   image: String,
   ingredients: Array,

@@ -11,8 +11,10 @@ div {
   background-color: #fff;
 }
 h1 {
-  font-family: 'Lobster', cursive;
-  font-weight: normal;
+  color: white;
+  font-size: 7vw;
+  font-weight: 400;
+  text-shadow: 3px 4px 0 rgba(0, 0, 0, 0.2);
 }
 img {
   max-width: 200px;
@@ -34,4 +36,20 @@ button {
   padding: 0.5rem;
   margin: 0.25rem 0;
   background: #007eb6;
+}
+.loading {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading p {
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  background: url('../img/spinner.svg') 100% 100% no-repeat;
 }
