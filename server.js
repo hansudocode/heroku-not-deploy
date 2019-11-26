@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const fileUpload = require('express-fileupload');
+const path = require('path');
 require('dotenv').config();
 
 const recipeModel = require('./api/recipe.model');
@@ -9,7 +10,6 @@ const recipeControllers = require('./api/recipe.controllers');
 const app = express();
 
 app.use(fileUpload());
-app.use(express.static('public'));
 app.use(express.json({ extended: false }));
 app.use(express.urlencoded({ extended: false }));
 app.use((req, res, next) => {
@@ -18,14 +18,6 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Methods', "GET,PUT,POST,DELETE")
   next()
 })
-
-if (process.env.NODE_ENV === 'production') {
-  // set static folder
-  app.use(express.static('client/build'));
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-  });
-}
 
 const dataBaseURL = process.env.DATABASE;
 
@@ -38,6 +30,14 @@ app.delete('/api/recipes/:id', recipeControllers.delete);
 app.get('/api/import', recipeControllers.import);
 app.get('/api/import/:limit', recipeControllers.import);
 app.get('/api/killall', recipeControllers.killall);
+
+if (process.env.NODE_ENV === 'production') {
+  // set static folder
+  app.use(express.static('client/build'));
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 mongoose
   .connect(dataBaseURL, { useNewUrlParser: true, useUnifiedTopology: true })
