@@ -35,7 +35,7 @@ exports.add = function(req, res) {
   console.log(req);
   Recipe.update(req.body, { upsert: true, new: true }, function(err, recipe) {
     if (err) return console.log(err);
-    return res.status(204);
+    return res.send(recipe);
   });
 };
 

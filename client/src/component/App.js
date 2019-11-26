@@ -54,18 +54,27 @@ function App() {
       .then(response => response.json())
       .then(res => {
         console.log(res)
-        console.log(meta)
         if (res.deletedCount > 0) {
           console.log('res.deletedCount', res.deletedCount)
           const newRecipes = [...recipes];
-          console.log(newRecipes.length);
           newRecipes.splice(index, 1);
-          console.log(newRecipes.length);
           setRecipes(newRecipes)
         }
       });
   };
 
+  // const addRecipe = recipe => {
+  //   fetch(`/api/recipes`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     },
+  //     body: JSON.stringify(recipe)
+  //   })
+  //     .then(response => response.json())
+  //     .then(recipe => console.log(recipe))
+  //     .then(()=> getRecipes())
+  // };
   const addRecipe = recipe => {
     fetch(`/api/recipes`, {
       method: "POST",
@@ -75,7 +84,10 @@ function App() {
       body: JSON.stringify(recipe)
     })
       .then(response => response.json())
-      .then(recipe => console.log(recipe))
+      .then(recipe => {
+        console.log(recipe)
+        setRecipes([...recipes, recipe])
+      })
       .then(()=> getRecipes())
   };
 
