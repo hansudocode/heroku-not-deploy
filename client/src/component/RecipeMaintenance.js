@@ -24,7 +24,8 @@ function RecipeMaintenance(props) {
     const {title, description, ingredients, preparation} = recipe
     if (title && description && ingredients && preparation) {
       props.addRecipe(recipe)
-      // .catch(() => setBusy(false))
+      props.getRecipes()
+      setBusy(false)
     }
     setBusy(false)
     console.log(recipe);
