@@ -25,11 +25,11 @@ function RecipeMaintenance(props) {
     if (title && description && ingredients && preparation) {
       props.addRecipe(recipe)
       .then(() => {
-        props.getRecipes()
         setBusy(false)
       })
       .catch(() => setBusy(false))
     }
+    setBusy(false)
     console.log(recipe);
   }
 
