@@ -63,18 +63,6 @@ function App() {
       });
   };
 
-  // const addRecipe = recipe => {
-  //   fetch(`/api/recipes`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify(recipe)
-  //   })
-  //     .then(response => response.json())
-  //     .then(recipe => console.log(recipe))
-  //     .then(()=> getRecipes())
-  // };
   const addRecipe = recipe => {
     fetch(`/api/recipes`, {
       method: "POST",
@@ -84,12 +72,24 @@ function App() {
       body: JSON.stringify(recipe)
     })
       .then(response => response.json())
-      .then(recipe => {
-        console.log(recipe)
-        setRecipes([...recipes, recipe])
-      })
+      .then(recipe => console.log(recipe))
       .then(()=> getRecipes())
   };
+  // const addRecipe = recipe => {
+  //   fetch(`/api/recipes`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     },
+  //     body: JSON.stringify(recipe)
+  //   })
+  //     .then(response => response.json())
+  //     .then(recipe => {
+  //       console.log(recipe)
+  //       setRecipes([...recipes, recipe])
+  //     })
+  //     .then(()=> getRecipes())
+  // };
 
   const importRecipes = () => {
     fetch(`/api/import`, {
