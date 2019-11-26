@@ -57,16 +57,14 @@ class Recipe extends React.Component {
       description,
       campbellsId,
       image,
-      ingredients,
-      preparation
     } = this.props.recipe;
     console.log(this.props)
     return (
       
       <div className="entry">
       <div className="entryImg">
-        <Link to={`/recipe/${_id}`}><img class='mainImg'
-          src={getImage(campbellsId)}
+        <Link to={`/recipe/${_id}`}><img className='mainImg'
+          src={getImage({campbellsId, image})}
           alt={decode(this.props.recipe.name)}
         /></Link>
         </div>

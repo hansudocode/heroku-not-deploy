@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import "../css/addRecipe.css";
 
 function RecipeMaintenance(props) {
@@ -7,51 +7,28 @@ function RecipeMaintenance(props) {
   const descriptionRef = React.createRef();
   const ingredientsRef = React.createRef();
   const preparationRef = React.createRef();
-  const importRef = React.createRef();
   const [busy, setBusy] = useState(false);
-  const [recipes, setRecipes] = useState([]);
 
   const createRecipe = (e) => {
-    e.preventDefault();
-    setBusy(true);
-    const recipe = {
-      title: nameRef.current.value,
-      image: imageRef.current.value,
-      description: descriptionRef.current.value,
-      ingredients: ingredientsRef.current.value.split(/\n/),
-      preparation: preparationRef.current.value.split(/\n/).map((step) => {return {step: step}})
-    };
-    const {title, description, ingredients, preparation} = recipe
-    if (title && description && ingredients && preparation) {
-      props.addRecipe(recipe)
-      props.getRecipes()
-      setBusy(false)
+    if (e.keyCode === '13') {
+      e.preventDefault();
+    } else {
+      const recipe = {
+        title: nameRef.current.value,
+        image: imageRef.current.value,
+        description: descriptionRef.current.value,
+        ingredients: ingredientsRef.current.value.split(/\n/),
+        preparation: preparationRef.current.value.split(/\n/).map((step) => {return {step: step}})
+      };
+      const {title, description, ingredients, preparation} = recipe
+      if (title.length > 0 && description.length > 0 && ingredients.length > 0 && preparation.length > 0) {
+        console.log('recipe', recipe)
+        setBusy(true);
+        props.addRecipe(recipe)
+        setBusy(false)
+      }
+      console.log(recipe);
     }
-    setBusy(false)
-    console.log(recipe);
-  }
-
-  // const buildRecipe = () => {
-  //   const recipe = {
-  //     title: nameRef.current.value,
-  //     image: imageRef.current.value,
-  //     description: descriptionRef.current.value,
-  //     ingredients: ingredientsRef.current.value.split(/\n/),
-  //     preparation: preparationRef.current.value.split(/\n/).map((step) => {return {step: step}})
-  //   };
-  //   const {title, description, ingredients, preparation} = recipe
-  //   if (title && description && ingredients && preparation) {
-  //     this.props.addRecipe(recipe);
-  //   }
-  // }
-
-  const importRecipes = (e) => {
-    
-    const limit = parseInt(importRef.current.value > 0 ? importRef.current.value : 1);
-    if (limit > 1) {
-      props.importRecipes(limit);
-    }
-    // console.log(recipe);
   }
   
   const doAction = (action) => {
@@ -63,7 +40,6 @@ function RecipeMaintenance(props) {
 
   }
   
-  // const enableBtn = () => busy ? 'disabled' : 'enabled';
     return (
       <div className='site-wrap'>
         <div>
@@ -75,12 +51,6 @@ function RecipeMaintenance(props) {
         <div>
           <h3>Import Data</h3>
           <form onSubmit={() => doAction(props.importRecipes())}>
-            {/* <input
-              type='text'
-              name='importText'
-              placeholder='Number of recipes to import'
-              ref={importRef}
-            /> */}
             <button type='submit' disabled={busy}>import</button>
           </form>
         </div>

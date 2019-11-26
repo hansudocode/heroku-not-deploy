@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Router } from "@reach/router";
-// import Recipe from "./Recipe";
 import Recipes from "./Recipes";
 import RecipeDetail from "./RecipeDetail";
-// import "../css/index.css";
 import "../css/styles.css";
 import RecipeMaintenance from './RecipeMaintenance';
 import Header from "./Header";
@@ -34,17 +32,10 @@ function App() {
         setRecipes(json);
       });
   }
-  // const removeRecipe = index => {
-  //   console.log(index);
-  //   const recipes = [...recipes];
-  //   recipes.splice(index, 1);
-  //   console.log(recipes);
-  //   setRecipes(recipes);
-  // };
-  // app.delete('/api/recipes/:id', recipeControllers.delete);
+
   const removeRecipe = (meta) => {
-    const { id, index } = meta
-    console.log(meta)
+    const { id } = meta
+    console.log('removeRecipe', meta)
     fetch(`/api/recipes/${id}`, {
       method: "DELETE",
       headers: {
@@ -53,43 +44,32 @@ function App() {
     })
       .then(response => response.json())
       .then(res => {
-        console.log(res)
+        console.log('removeRecipe.res', res)
+        console.log('removeRecipe.res.deletedCount', res.deletedCount)
         if (res.deletedCount > 0) {
-          console.log('res.deletedCount', res.deletedCount)
-          const newRecipes = [...recipes];
-          newRecipes.splice(index, 1);
-          setRecipes(newRecipes)
+          setRecipes(recipes => recipes.filter(recipes => recipes._id !== id))
         }
       });
   };
 
   const addRecipe = recipe => {
-    fetch(`/api/recipes`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(recipe)
-    })
+    console.log('addRecipe.recipe', recipe)
+    const {title, description, ingredients, preparation} = recipe
+    if (title.length > 0 && description.length > 0 && ingredients.length > 0 && preparation.length > 0) {
+      fetch(`/api/recipes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(recipe)
+      })
       .then(response => response.json())
-      .then(recipe => console.log(recipe))
-      .then(()=> getRecipes())
+      .then(recipe => {
+        console.log('addRecipe.recipe', recipe)
+        setRecipes([...recipes, recipe])
+      })
+    }
   };
-  // const addRecipe = recipe => {
-  //   fetch(`/api/recipes`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify(recipe)
-  //   })
-  //     .then(response => response.json())
-  //     .then(recipe => {
-  //       console.log(recipe)
-  //       setRecipes([...recipes, recipe])
-  //     })
-  //     .then(()=> getRecipes())
-  // };
 
   const importRecipes = () => {
     fetch(`/api/import`, {
@@ -136,16 +116,17 @@ export default App;
 /*
 maintenance page using functional components
 master detail page
-do more to it
 
-ideas:
   - Main page:
-    - Maintenance mode with params?
-      - Show edit button per recipe
-      - Show import from NYT button
-      - Show delete button
-      - Show Add button
-        - Show Add form
-    - Sort button?
-    - Pagination
+    - Show delete button
+  - RecipesDetails page:
+    - Cap first letter in desc
+    - Handle html content from Api
+    - Map prep and ingredients to list
+  - Maintenance page:
+    - Show edit button per recipe
+    - Show import from campbellsApi
+    - Show Add form
+      - Ingredients (split by newline)
+      - prep (split by newline)
 */

@@ -26,16 +26,20 @@ exports.findById = (req, res) => {
 exports.findOneAndUpdate = (recipe) => {
   const { id, campbellsId } = recipe;
   Recipe.findOneAndUpdate({campbellsId: campbellsId}, recipe, {upsert: true, new: true}, 
-    (err, doc) => {
-
+    (err, recipe) => {
+      if (err) return console.log(err);
+      console.log('recipe', recipe)
+      return res.send(recipe);
     })
 }
 
 exports.add = function(req, res) {
-  console.log(req);
-  Recipe.update(req.body, { upsert: true, new: true }, function(err, recipe) {
+  console.log('req.body', req.body)
+  const { body } = req;
+  Recipe.create(body, function(err, recipe) {
     if (err) return console.log(err);
-    return res.status(204);
+    console.log('recipe', recipe)
+    return res.send(recipe);
   });
 };
 
@@ -82,14 +86,13 @@ exports.upload = function(req, res) {
 const updateRecipe = (recipe) => {
   // console.log('recipe:', recipe) 
   const {id, campbellsId} = recipe;
-  const update = Recipe.update ({campbellsId: campbellsId}, recipe, { upsert: true, new: true }, 
+  Recipe.findOneAndUpdate ({campbellsId: campbellsId}, recipe, { upsert: true, returnOriginal: false}, 
     (err, obj) => {
       if( err ) { console.log(err); }
+      console.log('updateRecipe.obj', obj)
       return obj;
     }
   )
-  return update ? true : false;
-  // .catch(() => false);
 }
 const fetchRecipes = (req, res) => {
   // console.log(req)
@@ -105,18 +108,17 @@ const fetchRecipes = (req, res) => {
         return;
       } 
       response.json().then(data => {
-        // console.log('data', data)
-        const result = data.Result.map((recipe => {
+          data.Result.map((recipe => {
           const parsedRecipe = parseRecipe(recipe);
-          // console.log('parsedRecipe:', parsedRecipe);
-          const res = updateRecipe(parsedRecipe)
+          Recipe.findOneAndUpdate ({campbellsId: parsedRecipe.campbellsId}, parsedRecipe, { upsert: true, returnOriginal: false}, 
+            (err, obj) => {
+              if( err ) { console.log(err); }
+              return obj;
+            })
         }));
-        return result
       })
-      .catch(err => console.log(err))
-      // response.json().then(data => this.setState({ stories: data.results, isLoading: false }))
     })
-    .then((err, obj) => obj)
+    .then((err, obj) => res.send(obj))
     .catch(error => console.log(error))
 }
 

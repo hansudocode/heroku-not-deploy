@@ -1,10 +1,12 @@
-const getImage = (image, size) => {
-  // console.log('image', image);
+const getImage = (meta, size) => {
+  console.log('meta', meta);
   const newSize = size || 'square';
-  return `https://www.cscassets.com/recipes/${newSize}_cknew/${newSize}_${image}.jpg`;
-  // return (image.includes('https://') || image.includes('http://')) ?
-  //   image
-  //   : `http://oit2.scps.nyu.edu/~devereld/intermediate/img/${image}`
+  const {image, campbellsId} = meta;
+  const realImage = campbellsId ? campbellsId : image;
+  console.log('image', image);
+  return (campbellsId) ?
+    `https://www.cscassets.com/recipes/${newSize}_cknew/${newSize}_${realImage}.jpg`
+    : `http://oit2.scps.nyu.edu/~devereld/intermediate/img/${realImage}`
 }
 
 const decode = (str) => {
